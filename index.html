@@ -1,3 +1,74 @@
-<html>
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test</title>
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script type="text/javascript"
+    src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+  <link href='https://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
+
+</head>
+<body>    
+    <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+    
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="">Tutorials</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div style="text-align: center;">
+        <h1><b>Nano Lie Theory For Roboticists</b></h1>
+        A Tutorial on Micro Lie theory with simple examples
+    </div>
+    <hr>
+    <div class="container">
+        Author: Benjamin Wong 
+    </div>
+    <hr>
+
+    <div class="container">
+        <div class="col-md-2">
+            <p><h3><b>Contents</b></h3></p><br>
+            <p><a href="#background">Background</a><br>
+            <p><a href="#motivation">Motivating Examples</a><br>
+            <p><a href="#lorem">Lorem ipsum</a><br>
+        </div>
+        <div class="col-md-8">
+            <h2 id="background">Background</h2>
+            <hr>
+        
+            <p>This tutorial provides some informal interpretation of <a href="https://arxiv.org/abs/1812.01537" target=”_blank” > A micro Lie theory for state estimation in robotics</a>. 
+                Here, we emphasize on application and we will provide various examples for better understanding. You are strongly recomended to read the original paper before proceeding. The notations used in this article will be consistent to the paper. </p>
+            <p> In short, we want to use a tiny portion of Lie theory to handle representation of rotation in both control and state estimation. By transforming between the tangent space and manifold, 
+                we can effectively parameterize coordinate transformations; handle symmetries; define uncertainty; and define derivatives. </p>
+            <h2 id="motivation">Motivating Example</h2>
+            <hr>
+            <p> Consider a simple proportional control on 2D rotation \(SO(2)\). We have a reference angle \(\theta_{ref}\) we wish the robot to rotate to; and the current angle of the robot \(\theta_{t} \). we implement a naive linear proportoinal controller</p>
+            <p> <center> \( u_{t} = K(\theta_{ref} - \theta_{t}) \)</center></p>
+            <p> <center> \( \theta_{t+1} = \theta_{t} + u_{t} \)</center></p>
+
+        </div>
+    </div>
+</body>
 </html>
