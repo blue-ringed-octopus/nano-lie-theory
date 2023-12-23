@@ -31,7 +31,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="">Tutorials</a></li>
+                    <li><a href="https://blue-ringed-octopus.github.io/tutorials.html">Tutorials</a></li>
                 </ul>
             </div>
         </div>
@@ -43,7 +43,8 @@
     </div>
     <hr>
     <div class="container">
-        Author: Benjamin Wong 
+        Author: <br>
+        Benjamin Wong 
     </div>
     <hr>
 
@@ -62,12 +63,39 @@
                 Here, we emphasize on application and we will provide various examples for better understanding. You are strongly recomended to read the original paper before proceeding. The notations used in this article will be consistent to the paper. </p>
             <p> In short, we want to use a tiny portion of Lie theory to handle representation of rotation in both control and state estimation. By transforming between the tangent space and manifold, 
                 we can effectively parameterize coordinate transformations; handle symmetries; define uncertainty; and define derivatives. </p>
-            <h2 id="motivation">Motivating Example</h2>
+            
+            <!------------------------------------------------------------------------------------>
+
+            <h2 id="motivation">Motivating Examples</h2>
             <hr>
-            <p> Consider a simple proportional control on 2D rotation \(SO(2)\). We have a reference angle \(\theta_{ref}\) we wish the robot to rotate to; and the current angle of the robot \(\theta_{t} \). we implement a naive linear proportoinal controller</p>
+            <p> For the first example, consider a simple proportional control on 2D rotation \(SO(2)\). We have a reference angle \(\theta_{ref}\) we wish the robot to rotate to; and the current angle of the robot 
+                \(\theta_{t} \). we implement a naive linear proportoinal controller</p>
             <p> <center> \( u_{t} = K(\theta_{ref} - \theta_{t}) \)</center></p>
             <p> <center> \( \theta_{t+1} = \theta_{t} + u_{t} \)</center></p>
+            <p> lets say \(\theta_{ref} = \pi/4\), \(\theta_{0} = 0\), \(K=0.05\)  </p>
+            
+            <p><center><img src="src/ex1.gif"  style="border: 2px solid #555;"></center></p> 
 
+            <p> this worked as expected. </p>
+            
+            <p>Now try \(\theta_{ref} = \frac{3}{2}\pi\)</p>
+            <p><center><img src="src/ex2.gif"  style="border: 2px solid #555;"></center></p> 
+            <p>  Not the smartest way to do it, it's a lot more effiecient if the robot rotates clockwise to the reference pose</p>
+
+            <p>Even worst, see \(\theta_{ref} = 2\pi\), we know \(2\pi\) is exactly the same as \(0\) for rotation, but for our controller:</p>
+            <p><center><img src="src/ex3.gif"  style="border: 2px solid #555;"></center></p> 
+            <p> the naive controller has no idea about the cyclic nature of rotation, it's simply trying to drive \(0\) toward \(2\pi\) on the real number line, worse, any number larger than \(2\pi\) causes a huge 
+                difference and causes a proportionally large input to the robot. The same problem exists in state estimation. Consider two sensors measuring an angle, one measured \(5^{\circ}\), 
+                another measured \(355^{\circ}\), our intuition tells us the mean should be \(0\), because both are 5 degrees away from 0, one from each sides. But if we naively get the average between the two numbers, we get \(180^{\circ}\), 
+                the exact opposite of what we want.</p>
+
+            <p> The 2D rotation can be handled by some smart combinations of modulus and min, but things get more complicated in 3D.  </p>
+
+            <!------------------------------------------------------------------------------------>
+            <h2 id="lorem">Lorem ipsum</h2>
+            <hr>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar accumsan mollis. Phasellus non dignissim odio, eget maximus turpis. Mauris consectetur venenatis felis, at tincidunt diam luctus in. Duis in pellentesque dui, non suscipit tellus. Phasellus sapien ante, malesuada et ipsum vel, interdum posuere nibh. Proin quis vulputate neque, ut sodales metus. Donec pretium neque ac tellus pharetra, at bibendum justo tristique. Integer pellentesque tellus tellus, ut convallis massa hendrerit tempor. Fusce tincidunt hendrerit felis, eget condimentum tortor pulvinar vel. Cras imperdiet id lectus sed imperdiet. Mauris ultrices, orci in efficitur euismod, neque enim euismod augue, tempor tristique ligula enim vitae erat. Sed laoreet, purus nec tincidunt elementum, eros felis mattis sem, quis aliquam erat odio eu elit.
+            </p>
         </div>
     </div>
 </body>
