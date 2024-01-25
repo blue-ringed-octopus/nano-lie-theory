@@ -38,7 +38,7 @@
     </nav>
     
     <div style="text-align: center;">
-        <h1><b>Nano Lie Theory For Roboticists</b></h1>
+        <h1><b>Nano Lie Theory For Roboticist</b></h1>
         A Tutorial on Micro Lie theory with simple examples
     </div>
     <hr>
@@ -51,16 +51,23 @@
     <div class="container">
         <div class="col-md-2">
             <p><h3><b>Contents</b></h3></p><br>
-            <p><a href="#background">Background</a><br>
-            <p><a href="#motivation">Motivating Examples</a><br>
-            <p><a href="#lorem">Lorem ipsum</a><br>
+            <p>
+                <a href="#background">Background</a><br>
+                <a href="#motivation">Motivating Examples</a><br>
+                <a href="#manifold"> Manifold </a><br>
+                <a href="#exp"> Exp and Log </a><br>
+                <a href="#plusminus"> \(\oplus\) and \(\ominus\) </a><br>
+
+                <a href="#ref">References</a><br>
+            </p>
+
         </div>
         <div class="col-md-8">
             <h2 id="background">Background</h2>
             <hr>
         
             <p>This tutorial provides some informal interpretation of <a href="https://arxiv.org/abs/1812.01537" target=”_blank” > A micro Lie theory for state estimation in robotics</a>. 
-                Here, we emphasize on application and we will provide various examples for better understanding. You are strongly recomended to read the original paper before proceeding. The notations used in this article will be consistent to the paper. </p>
+                Here, we emphasize on application and we will provide various examples for better understanding. You are strongly recommended to read the original paper before proceeding. The notations used in this article will be consistent to the paper. </p>
             <p> In short, we want to use a tiny portion of Lie theory to handle representation of rotation in both control and state estimation. By transforming between the tangent space and manifold, 
                 we can effectively parameterize coordinate transformations; handle symmetries; define uncertainty; and define derivatives. </p>
             
@@ -68,8 +75,11 @@
 
             <h2 id="motivation">Motivating Examples</h2>
             <hr>
+            <p> If you are wonder why do we bother learning Lie theory, this section will give you a glimpse on the trouble we face when dealing with rotations. 
+                If you are already struggling with rotation, you can skip this part promptly. </p>
+            <p> <h3> Example 1: Planar Rotation </h3></p>
             <p> For the first example, consider a simple proportional control on 2D rotation \(SO(2)\). We have a reference angle \(\theta_{ref}\) we wish the robot to rotate to; and the current angle of the robot 
-                \(\theta_{t} \). we implement a naive linear proportoinal controller</p>
+                \(\theta_{t} \). we implement a naive linear proportional controller</p>
             <p> <center> \( u_{t} = K(\theta_{ref} - \theta_{t}) \)</center></p>
             <p> <center> \( \theta_{t+1} = \theta_{t} + u_{t} \)</center></p>
             <p> lets say \(\theta_{ref} = \pi/4\), \(\theta_{0} = 0\), \(K=0.05\)  </p>
@@ -80,7 +90,7 @@
             
             <p>Now try \(\theta_{ref} = \frac{3}{2}\pi\)</p>
             <p><center><img src="src/ex2.gif"  style="border: 2px solid #555;"></center></p> 
-            <p>  Not the smartest way to do it, it's a lot more effiecient if the robot rotates clockwise to the reference pose</p>
+            <p>  Not the smartest way to do it, it's a lot more efficient if the robot rotates clockwise to the reference pose</p>
 
             <p>Even worst, see \(\theta_{ref} = 2\pi\), we know \(2\pi\) is exactly the same as \(0\) for rotation, but for our controller:</p>
             <p><center><img src="src/ex3.gif"  style="border: 2px solid #555;"></center></p> 
@@ -89,13 +99,237 @@
                 another measured \(355^{\circ}\), our intuition tells us the mean should be \(0\), because both are 5 degrees away from 0, one from each sides. But if we naively get the average between the two numbers, we get \(180^{\circ}\), 
                 the exact opposite of what we want.</p>
 
-            <p> The 2D rotation can be handled by some smart combinations of modulus and min, but things get more complicated in 3D.  </p>
+            <p> <h3> Example 2: 3D rotation </h3></p>
+            <p> The 2D rotation can be handled by some smart combinations of modulus and min, but things get more complicated in 3D. Lets say we represent the rotation in a matrix form </p>
+            <p> <center> \(R_{1}, R_{2} \in SO(3) \) </center></p>
+            <p> \(SO\) stands for <i> special orthogonal group</i>, \((3)\) denotes it is in dimension 3. Matrices in \(SO(3)\) are \(3\times 3\). For a valid rotation, 
+                the columns of the matrix has to be orthogonal to each other; all columns are normalized, and the determinant of the matrix is \(+1\), Plainly speaking, 
+                the matrix does not stretch, skew, or reflect any vector when it is applied to the vector. Now we want to get an average between two rotation matrices \(R_1, R_2\). 
+                We can naively do that arithmetically </p>
+            
+            <p> <center> \( \bar{R} = \frac{1}{2}(R_{1}+R_{2}\)) </center></p>
+            <p> The problem is that the result is not guaranteed to be a valid rotation matrix. This problem is demonstrated by 
+                <a href="https://www.youtube.com/watch?v=gdDfQp4ODVw&ab_channel=SamJafarian">this youtube video.</a> </p>
+
+            <p> Rotation in 3D has 3 degrees of freedom. With this, we can decompose the rotation matrix into 3 2D rotation matrices, each corresponds to rotation around the x, y, z axes. 
+                These matrices are parameterized by the angle of rotation row, pitch ,and yaw respectively. This is called the <i>Euler angles</i> representation. Doing arithmetic in euler angles guarantees us 
+                to maintain valid rotation. Euler angles are notoriously problematic. For instance, gimbal lock, where the matrix loses a degree of freedom due to two of the rotation axes lining up. And more 
+                relevantly, interpolating two sets of euler angles does not create the most efficient path between the two poses, as shown in 
+                <a href="https://www.youtube.com/watch?v=80Y3DwOqaEA&ab_channel=SamJafarian">this video</a>. This means that when we fuse two sources of measurements, the weighted average can have a pose that is 
+                completely different from any of the two measurements.  
+            </p>
+
+            <p> Lie theory provides us a unified method to tackle all these problems at once, regardless of the dimension, and extends beyond rotations.   </p>
 
             <!------------------------------------------------------------------------------------>
-            <h2 id="lorem">Lorem ipsum</h2>
+            <h2 id="manifold"> Manifold  </h2>
             <hr>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pulvinar accumsan mollis. Phasellus non dignissim odio, eget maximus turpis. Mauris consectetur venenatis felis, at tincidunt diam luctus in. Duis in pellentesque dui, non suscipit tellus. Phasellus sapien ante, malesuada et ipsum vel, interdum posuere nibh. Proin quis vulputate neque, ut sodales metus. Donec pretium neque ac tellus pharetra, at bibendum justo tristique. Integer pellentesque tellus tellus, ut convallis massa hendrerit tempor. Fusce tincidunt hendrerit felis, eget condimentum tortor pulvinar vel. Cras imperdiet id lectus sed imperdiet. Mauris ultrices, orci in efficitur euismod, neque enim euismod augue, tempor tristique ligula enim vitae erat. Sed laoreet, purus nec tincidunt elementum, eros felis mattis sem, quis aliquam erat odio eu elit.
+            <p> The most important concepts we need to understand in order to apply Lie theory are manifold and tangent space. Formally, a manifold is a set of elements that satisfies 
+                <ul>
+                    <li><b>Closure</b>: multiply two elements in the set and the result is also an element in the set <br>
+                    Example: Rotating by \(\theta_1\), followed by rotating by \(\theta_2\), is equivalent to rotating by \(\theta_1+\theta_2\), which is still a rotation action
+                    <p> <center> \(\begin{bmatrix}
+                        \cos(\theta_1) & -\sin(\theta_1)\\ 
+                        \sin(\theta_1) & \cos(\theta_1)
+                        \end{bmatrix}\begin{bmatrix}
+                        \cos(\theta_2) & -\sin(\theta_2)\\ 
+                        \sin(\theta_2) & \cos(\theta_2)
+                        \end{bmatrix}  = \begin{bmatrix}
+                        \cos(\theta_1+\theta_2) & -\sin(\theta_1+\theta_2)\\ 
+                        \sin(\theta_1+\theta_2) & \cos(\theta_1+\theta_2)
+                        \end{bmatrix}  \)</center>  </p>
+                    </li>
+                    <li><b>Identity</b> : any element multiplied to the identity result in itself, it represents non-action. <br>
+                        Example: Rotate by \(0\) degree results in identity matrix
+                        <p> <center> \(\begin{bmatrix}
+                            \cos(0) & -\sin(0)\\ 
+                            \sin(0) & \cos(0)
+                            \end{bmatrix} = \begin{bmatrix}
+                            1 & 0\\ 
+                            0 & 1
+                            \end{bmatrix}  \)</center>  </p>
+                    </li>
+                    <li><b>Inverse</b> : for all elements in the set, there exists an inverse that will undo the action. <br>
+                        Example: Inverting a rotation matrix is equivalent to rotating in the reverse direction, which undo the original rotation
+                        <p> <center> \(\begin{bmatrix}
+                            \cos(\theta) & -\sin(\theta)\\ 
+                            \sin(\theta) & \cos(\theta)
+                            \end{bmatrix}^{-1} = \begin{bmatrix}
+                            \cos(\theta) & \sin(\theta)\\ 
+                            -\sin(\theta) & \cos(\theta)
+                            \end{bmatrix} =  \begin{bmatrix}
+                            \cos(-\theta) & -\sin(-\theta)\\ 
+                            \sin(-\theta) & \cos(-\theta)
+                            \end{bmatrix}\)</center>  </p>
+                    </li>  
+                    <li><b>Associativity</b> : Multiplication for matrices are always associative. In our context, rotating an element sequentially by multiple matrices 
+                        is equivalent to combining all the matrices into a single rotation matrix (by closure property), then rotate the element with the combined matrix</li>  
+                </ul>
+
+                <p> The above properties defined a <i> group </i>. In addition, if the group locally resembles Euclidean space, that is, the local neighborhood of any point can be continuously mapped to 
+                    \(\mathbb{R}^n\) without creating holes, and the mapping is bijective, then we call it a manifold. A lie group is a manifold that is differentiable, namely, there are no sharp corners on the manifold. 
+                </p>
+                <p> It is helpful to think of a hypersurface embedded in a higher dimensional space in order to "visualize" the operations. For example, unit complex number living in a 2D plane \(x+yi\), but constrainted by 
+                    the relation \(x^2+y^2=1\), making it a 1D manifold (a circle). Similarly 2D rotation matrices are 2x2 matrix \(\mathbb{R}^{2\times 2}\), but with only 1 degree of freedom, 
+                    making it a 1D surface embedded in \(\mathbb{R}^{2\times 2}\) space. Refer back to figure 1 of 
+                    <a href="https://arxiv.org/abs/1812.01537" target=”_blank” > micro Lie theory</a> for better visualization.</p>
+
+                <p> A <b>tangent space</b> is a linear hyper plane tangents to any point on the manifold. The tangent space at the identity is called Lie algebra. The tangent space is useful because 
+                    it is a vector space, with all vectors corresponds to a point on the manifold, and the dimension of the vector equal to the degrees of freedom of the manifold. With that, we can perform meaningful 
+                    With that, we can perform meaningful operations like addition, subtraction, and calculus, in their usual vector definition. In robotic context, the Lie algebra can be think of
+                    as the global coordinate; and the tangent spaces are the local coordinates anywhere in the workspace. This is useful because any measurements the robot takes, or any action the robot performs 
+                    are, most of the time, local to the robot's frame at the time of execution instead of the global frame. 
+                </p>
+                <p><h3>Example:</h3> <br>
+                    \(\theta\) is the tangent space of the Lie group \(SO(2)\), 
+                    <p> <center> \(\begin{bmatrix}
+                        \cos(\theta) & -\sin(\theta)\\ 
+                        \sin(\theta) & \cos(\theta)
+                        \end{bmatrix} \rightarrow \theta \) </center>  </p>
+                    unlike the rotation matrices themselves, we can add and subtract the angles 
+                    <p> <center> \( \theta'=\theta+d\theta\) </center>  </p>
+
+                    and we can put the result back to the manifold 
+                    <p> <center> \( \theta' \rightarrow \begin{bmatrix}
+                        \cos(\theta') & -\sin(\theta')\\ 
+                        \sin(\theta') & \cos(\theta')
+                        \end{bmatrix} \) </center>  </p>
+
+                    <p>Note that the tangent vector can be extended to infinity, but the manifold representation is bounded. This can be visualized by wrapping the vector around the circular manifold. The vector 
+                        wraps around on the surface and never escape. Using this property, we can handle the rotational symmetry by wrapping an angle on to the manifold, and find the tangent space representation of the corresponding 
+                        element. This gives us the angle wrapping formula
+                    </p>
+                    <p> <center> \(\theta = \text{atan2}(\text{sin}(\theta) ,\text{cos}(\theta)) \)</center>  </p> 
+
+                    The new \(\theta\) will always be in the range \((-\pi, \pi]\)
+                </p>
+
+
             </p>
+
+            <!------------------------------------------------------------------------------------>
+            <h2 id="exp">Exp and Log </h2>
+            <hr>
+            <p> 
+                These transformation between the manifold and the tangent space are called the log and exp operators. The <b>log(\(\cdot\))</b> map takes a vector on the tangent space and "wrap" it onto the manifold, 
+                returning the group representation. The line formed on the surface is called the <i>geodesic</i>,
+                which is the shortest path between the element at the origin and the target element returned by the log map. The <b>exp(\(\cdot\))</b> map takes a group element and
+                unwrap it on to the Lie algebra.
+            </p>
+        
+            <p>
+            The exp operator and log operator of rotation matrices are the <a href="https://en.wikipedia.org/wiki/Matrix_exponential" target=”_blank”>matrix exponential</a> and 
+            <a href="https://en.wikipedia.org/wiki/Logarithm_of_a_matrix" target=”_blank”>matrix logarithm</a>. For our \(SO(2)\) example,
+            <p> <center>\( \exp\left( \begin{bmatrix}
+                0 & -\theta\\ 
+                \theta &0
+                \end{bmatrix}  \right) = \begin{bmatrix}
+                \cos(\theta) & -\sin(\theta)\\ 
+                \sin(\theta) & \cos(\theta)
+                \end{bmatrix}  \)</center>  
+            </p> 
+            <p> <center>\( \log\left( \begin{bmatrix}
+                \cos(\theta) & -\sin(\theta)\\ 
+                \sin(\theta) & \cos(\theta)
+                \end{bmatrix}  \right) =  \begin{bmatrix}
+                0 & -\theta\\ 
+                \theta &0
+                \end{bmatrix} \)</center>  
+            </p>
+
+            <p>    
+                The matrix log does not return \(\theta\) directly as promised. While the tangent space is a vector space, the elements are not necessarily a cartesian vector. 
+                However, they can be represented by a cartesian vector as linear combination of the base elements of the space. For this example, since 2D rotation has 1 degree of freedom, there is only one basis
+            </p>    
+            <p> <center>\( \begin{bmatrix}
+                0 & -\theta\\ 
+                \theta &0
+                \end{bmatrix} = \theta \begin{bmatrix}
+                0 & -1\\ 
+                1 &0
+                \end{bmatrix}=\theta \mathbf{e}  \)</center>  
+            </p>
+            <p>    
+                This is more clear in 3D rotation. 
+            </p>   
+
+            <p> <center>\( \log\left( \mathbf{R}  \right) =  \begin{bmatrix}
+                0 & -\omega_z & \omega_y\\ 
+                \omega_z & 0 & -\omega_x\\
+                -\omega_y & \omega_x & 0 
+                \end{bmatrix} = \omega_x\begin{bmatrix}
+                0 &0  & 0\\ 
+                0 & 0 & -1\\
+                0 & 1 & 0 
+                \end{bmatrix} + \omega_y\begin{bmatrix}
+                0 &0  & 1\\ 
+                0 & 0 & 0\\
+                -1 & 0 & 0 
+                \end{bmatrix} + \omega_z\begin{bmatrix}
+                0 & -1  & 0\\ 
+                1 & 0 & 0\\
+                0 & 0 & 0 
+                \end{bmatrix}, \quad \mathbf{R} \in SO(3)\)</center>  
+            </p>
+            <p> 
+                The matrix 
+                <p>  <center>\([\omega]_{\times} =\begin{bmatrix}
+                    0 & -\omega_z & \omega_y\\ 
+                    \omega_z & 0 & -\omega_x\\
+                    -\omega_y & \omega_x & 0 
+                    \end{bmatrix}\)</center></p>,
+                <p> is called the cross-product matrix. It's the Lie algebra of \(SO(2)\), denoted by  \(\mathfrak{so}(3)\),  The cartesian vector </p>
+                <p> <center>\( \mathbb{\omega} = \begin{bmatrix}
+               \omega_x\\ 
+                \omega_y\\
+                \omega_z
+                \end{bmatrix} \)</center>  
+            </p>
+            <p> 
+                is the <i> axis-angle representation</i> of the rotation, where the direction of the vector is the axis of rotation, and the magnitude of the vector is the angle of rotation. Sometimes 
+                explicitly written as \(\theta \hat{u} \)
+            </p>
+
+            <p> 
+                The operation of turning a tangent space representation to a cartesian vector is called <i> Vee </i>, denoted by \((\cdot)^\vee\). The inverse is <i>hat</i>, denoted by \((\cdot)^\wedge\). 
+                A generic cartesian representation is denoted as \(\tau\), so the tangent space representation is \( \tau^\wedge \), and \((\tau^\wedge)^\vee = \tau\). For the \(SO(3)\) example,
+            </p>
+            <p>  <center>\( \omega^\wedge = [\omega]_\times \)</center></p>
+            <p>  <center>\( ([\omega]_\times)^\vee = \omega \)</center></p>
+
+            <p>
+                In general, we want to operate on the cartesian representation of the tangent space. So the exp and log, vee and hat are chained together to skip the non-cartesian representation, 
+                namely, the capitalized \(\text{Log}(\cdot)\) and \(\text{Exp}(\cdot)\). Where
+            </p>
+            <p>  <center>\( \text{Exp}(\tau) \doteq  \exp(\tau^\wedge) \)</center></p>
+            <p>  <center>\( \text{Log}(\mathcal{X}) \doteq  \log(\mathcal{X})^\vee \)</center></p>
+
+            for example, in \(SO(2)\)
+            <p>  <center>\( \text{Log}(R) = \text{arctan2}(r_{21},r_{11}) \)</center></p>
+
+            <p>  <center>\( \text{Exp}(\theta) =\begin{bmatrix}
+                \cos(\theta) & -\sin(\theta)\\ 
+                \sin(\theta) & \cos(\theta)
+                \end{bmatrix} \)</center></p>
+
+            <!------------------------------------------------------------------------------------>
+            <h2 id="plusminus"> \(\oplus\) and \(\ominus\)</h2>
+            <hr>
+            <p>
+                The \(\oplus\) and \(\ominus\) operators allow us to perform increments and finding difference on the elements of the manifold directly. In robotic context, the goal is to keep all the
+                state representation on the manifold, and incorporate vector information such as input and observation. 
+            </p>
+
+            <p>  <center>\( \text{Exp}(\theta) =\begin{bmatrix}
+                \cos(\theta) & -\sin(\theta)\\ 
+                \sin(\theta) & \cos(\theta)
+                \end{bmatrix} \)</center></p>
+
+
+            <!------------------------------------------------------------------------------------>
+            <h2 id="ref">References</h2>
+            <hr>
+
         </div>
     </div>
 </body>
