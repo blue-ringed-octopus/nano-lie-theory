@@ -53,6 +53,7 @@
             <p><h3><b>Contents</b></h3></p><br>
             <p>
                 <a href="#background">Background</a><br>
+                <a href="#primer">Primer</a><br>
                 <a href="#motivation">Motivating Examples</a><br>
                 <a href="#manifold"> Manifold </a><br>
                 <a href="#exp"> Exp and Log </a><br>
@@ -71,6 +72,75 @@
             <p> In short, we want to use a tiny portion of Lie theory to handle representation of rotation in both control and state estimation. By transforming between the tangent space and manifold, 
                 we can effectively parameterize coordinate transformations; handle symmetries; define uncertainty; and define derivatives. </p>
             
+            <!------------------------------------------------------------------------------------>
+            <h2 id="primer"> Primer  </h2>
+            <hr>
+            <p> This section briefly explains the undergraduate level basics of rigid transformation before introducing Lie theory. Those who are familiar can skip to the next section</p>
+            <p> <h3> Transformation Matrix  </h3></p>
+            <P> A matrix can be think of as an operator that moves a point into a different point in the same space. 
+                These points are represented in the form of a vector. Each entry of the vector represents the contribution of each 
+                standard basis vector. <br>
+            </P>
+            <p> <center> \(v =\begin{bmatrix} c_1 \\ c_2 \\ c_3  \end{bmatrix} = c_1e_1+c_2e_2+c_3e_3 \)</center></p>
+            <p> The columns of a transformation matrix tells us where each basis gets mapped to </p>
+            <p> <center> \(\begin{bmatrix} \mid & \mid & \mid \\
+                b_1 & b_2 & b_3\\
+                \mid & \mid & \mid \end{bmatrix} \begin{bmatrix} 1 \\ 0 \\ 0  \end{bmatrix}  = 
+                b_1 \), \(\begin{bmatrix} \mid & \mid & \mid \\
+                b_1 & b_2 & b_3\\
+                \mid & \mid & \mid \end{bmatrix} \begin{bmatrix} 0 \\ 1 \\ 0  \end{bmatrix}  = 
+                b_2 \), \(\begin{bmatrix} \mid & \mid & \mid \\
+                b_1 & b_2 & b_3\\
+                \mid & \mid & \mid \end{bmatrix} \begin{bmatrix} 0 \\ 0 \\ 1  \end{bmatrix}  = 
+                b_3 \) </center></p>
+
+            <p> Combining the two, the matrix transformation can be think of applying the weighted sum to the transformed basis.</p>
+            <p> <center> \(\begin{bmatrix} \mid & \mid & \mid \\
+                                             v_1 & v_2 & v_3\\
+                                             \mid & \mid & \mid \end{bmatrix} \begin{bmatrix} c_1 \\ c_2 \\ c_3  \end{bmatrix}  = 
+                                             v_1c_1+v_2c_2+v_3c_3 \)</center></p>
+            
+            <p> All matrix transformation can be think of as a combination of the following 5 geometric operations: 
+                <br> 1. scale 2.rotate 3.shear 4.reflect 5.projection </p>
+            <p> <h3> Rotation Matrix </h3></p>
+            <p> In 2 dimensions, the rotation matrix is often introduced as </p>
+            <p> <center> \(R = \begin{bmatrix} \cos\theta & -\sin\theta\\
+                                            \sin\theta & \cos\theta \end{bmatrix} \)</center></p>
+            <p> because it has an intuitive geometric interpretation where \(\theta\) is the counter-clockwise angle of rotation.
+                Later we will show how generalizing this form into higher dimension will be problemetic. It is more useful to define it 
+            by its fundamental proeprties. For the matrix to be non-scaling and non-shearing, the column vectors of the matrix has to be 
+            orthogonormal i.e.  </p>
+            <p> <center> \(R = \begin{bmatrix} \mid & \mid &\\
+                v_1 & v_2 & \cdots \\
+                \mid & \mid & \end{bmatrix} \)</center></p>
+            <p> <center> \( v_{i}\cdot v_{i} = 1 \)</center></p>
+            <p> <center> \( v_{i}\cdot v_{j} = 0 \text{ if } i\neq j \)</center></p>
+            Or more compactly,
+            <p> <center> \(R^TR = RR^T = I \)</center></p>
+            In addition, to exclude reflection, the determinant of the matrix has to be positive 1
+            <p> <center> \( \text{det}(R) = 1\)</center></p>
+            <p> Side note, this means that the matrix has even numbers of negative eigenvalues, which also means that any pair of reflection forms a rotation </p>
+            <p> <h3> Rigid Transformation Matrix </h3></p>
+            <p> A rigid transformation is a combination of rotation and translation, both preserve the shape of the set of points after 
+                the transformation. It can be written in the form of </p>
+            <p> <center> \( x_2 = Rx_1 + t \)</center></p>
+            <p>where \(R\) is the rotaion matrix, \(x\) is point, and \(t\) is the translation. Translation is not a linear operation 
+                because the zero element is not preserved. However it is an affine operation, which we can augment to a linear form by
+                introducing the homogenous coordinate. 
+            </p>
+            <p> <center> \( \begin{bmatrix} x_2 \\1 \end{bmatrix}= \begin{bmatrix}R & t\\ 0 & 1\end{bmatrix}\begin{bmatrix} x_1 \\1 \end{bmatrix} \)</center></p>
+            <p> Essentially, the translation is performed by lifting the point to the homogenous coordinate, 
+                and then perform a shearing transformation on an extra dimention.</p>
+            <p><center><img src="resource/homogeneous.png"  style="border: 2px solid #555; height: 100%; width: 100%; object-fit: contain"></center></p> 
+            
+            <p> <h3> Reference Frame </h3></p>
+            <p> Instead of transforming vectors, the transformation matrix can be treated as a transformation between reference frame. 
+                The column vectors is the basis of the observed frame in the global coordinate. This can be used to represent a sequence of 
+                robot's poses over time, or a tree of relative position of the links of a robot arm.</p>
+                <p><center><img src="resource/transform1.png"  style="border: 2px solid #555;"></center></p> 
+
+               <p> More importantly, applying the transformation
+                matrix to a vector can be considered a change of basis from the observed frame to the global frame. </p>
             <!------------------------------------------------------------------------------------>
 
             <h2 id="motivation">Motivating Examples</h2>
@@ -120,6 +190,8 @@
             </p>
 
             <p> Lie theory provides us a unified method to tackle all these problems at once, regardless of the dimension, and extends beyond rotations.   </p>
+
+
 
             <!------------------------------------------------------------------------------------>
             <h2 id="manifold"> Manifold  </h2>
@@ -329,7 +401,7 @@
             <!------------------------------------------------------------------------------------>
             <h2 id="ref">References</h2>
             <hr>
-
+            The Banana Distribution Is Gaussian: A Localization Study with Exponential Coordinates. In: Robotics. MIT Press; 2013. doi:10.7551/mitpress/9816.003.0039
         </div>
     </div>
 </body>
